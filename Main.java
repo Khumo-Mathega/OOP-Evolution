@@ -23,9 +23,9 @@ public class Main{
                     double s = Double.parseDouble(parts[2].trim());
                     String x = parts[3].trim();
                     // leave part[3] as a string , only change if its employee
-                    if (id == "A"){
+                    if (id.equals("A")){
                         array[count] = new Employer(n, s, x);
-                    }else if (id == "B"){
+                    }else if (id.equals("B")){
                         boolean b = Boolean.parseBoolean(x);
                         array[count] = new Employee(n, s, b);
                     }
@@ -40,6 +40,10 @@ public class Main{
             System.out.print("Error: " + e.getMessage());
             System.exit(-1);
         }
+        for (int i = 0; i < count; i ++){
+            System.out.println(array[i]);
+        }
+
         // Serialization
         try{
             FileOutputStream file = new FileOutputStream("data.ser");
@@ -72,8 +76,10 @@ public class Main{
             System.out.println("File not found...");
             System.exit(-1);
         }
+        
         // sort then print
         Arrays.sort(arr, 0, num);
+        System.out.println("Sorted Array");
         System.out.println("======== ======== ===========");
         for(int i = 0; i < num; i++){
             System.out.println(arr[i]);

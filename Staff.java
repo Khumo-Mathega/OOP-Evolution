@@ -32,7 +32,7 @@ public abstract class Staff implements Taxable, Comparable<Staff>, Serializable{
         return (this.name).compareTo(other.name);
     }
     public String getDetails(){
-        return "\nName: " + getName() + "\nSalary: " + getSalary();
+        return "\nName: " + getName() + "\nSalary: %.2f" + getSalary();
     }
     public String toString(){
         return getDetails();
