@@ -25,10 +25,8 @@ This project serves as a long-term learning system to practice and master Java O
 
 ### Upcoming
 
-* Improved file handling
-* Collections
-* Better system structure
-* and more
+* Making use of ArrayList(Dynamic Array)
+* Menu Based System, with various features
 
 ## Tech Stack
 
