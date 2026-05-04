@@ -5,15 +5,14 @@ import java.util.*;
 import java.io.*;
 
 public class Main{
-    private static int MAX = 100;
     public static void main(String[] args){
         // reading from text file first
         int count = 0;
-        Staff[] array = new Staff[MAX];
+        ArrayList<Staff> array = new ArrayList<Staff>();
         try{
             File file = new File("staff.txt");
             Scanner input = new Scanner(file);
-            while(input.hasNextLine() && count < MAX){
+            while(input.hasNextLine()){
                 try{
                     String line = input.nextLine();
                     String[] parts = line.split(",");
@@ -24,10 +23,10 @@ public class Main{
                     String x = parts[3].trim();
                     // leave part[3] as a string , only change if its employee
                     if (id.equals("A")){
-                        array[count] = new Employer(n, s, x);
+                        array.add(new Employer(n, s, x));
                     }else if (id.equals("B")){
                         boolean b = Boolean.parseBoolean(x);
-                        array[count] = new Employee(n, s, b);
+                        array.add(new Employee(n, s, b));
                     }
                 }
                 catch(Exception e){
@@ -40,8 +39,9 @@ public class Main{
             System.out.print("Error: " + e.getMessage());
             System.exit(-1);
         }
+        System.out.println("Objects added(From txt file to ArrayList): " + count);
         for (int i = 0; i < count; i ++){
-            System.out.println(array[i]);
+            System.out.println(array.get(i));
         }
 
         // Serialization
@@ -49,7 +49,7 @@ public class Main{
             FileOutputStream file = new FileOutputStream("data.ser");
             ObjectOutputStream out = new ObjectOutputStream(file);
             for (int i = 0; i < count; i++){
-                out.writeObject(array[i]);
+                out.writeObject(array.get(i));
             }
             out.close();
         }catch (Exception e){
@@ -57,15 +57,15 @@ public class Main{
             System.exit(-1);
         }
         // Deserialization
-        int num = 0;
-        Staff[] arr = new Staff[MAX];
+        int count2 = 0;
+        ArrayList<Staff> arr = new ArrayList<Staff>();
         try{
             FileInputStream file = new FileInputStream("data.ser");
             ObjectInputStream in = new ObjectInputStream(file);
-            while(true && num < MAX){
+            while(true ){
                 try{
-                    arr[num] = (Staff) in.readObject();
-                    num ++;
+                    arr.add((Staff) in.readObject());
+                    count2 ++;
                 }catch (EOFException e){
                     break;
                 }
@@ -76,13 +76,13 @@ public class Main{
             System.out.println("File not found...");
             System.exit(-1);
         }
-        
+        System.out.println("Objects added to list(From ser file to ArrayList): " + count2);
         // sort then print
-        Arrays.sort(arr, 0, num);
+        Collections.sort(arr);
         System.out.println("Sorted Array");
         System.out.println("======== ======== ===========");
-        for(int i = 0; i < num; i++){
-            System.out.println(arr[i]);
+        for(int i = 0; i < count2; i++){
+            System.out.println(arr.get(i));
         }
         System.out.println("======== ======== ===========");
     }
