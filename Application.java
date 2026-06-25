@@ -5,22 +5,28 @@ import java.util.*;
 import java.io.*;
 
 public class Application{
-    private ArrayList<Staff> array = new ArrayList<Staff>();  // any method can see it
+    public static ArrayList<Staff> array = new ArrayList<Staff>();  // any method can see it
+    public static ArrayList<Staff> newArray = new ArrayList<Staff>();
+
+    //////////////////////////////////////
+    public static void main(String[] args){
+        ReadingFromTextFile();
+        Serialization();
+        Deserialization();
+        DisplayArray();  // print
+        Collections.sort(newArray);  // sort
+        System.out.println("Sorted Array");
+        DisplayArray();
+    }
 
     /////////////// function to read from textfile
-    public static int ReadingFromTextFile(){
+    public static void ReadingFromTextFile(){
         int count = 0;
-        Scanner input;
+        Scanner input = null;
         try{
             File file = new File("staff.txt");
             input = new Scanner(file);
-        }
-        catch (IOException e){
-            System.out.println("File Not Found Error...Exiting...");
-            System.exit(-1);
-        }
-        while (input.hasNextLine()){
-            try{
+            while (input.hasNextLine()){
                 String line = input.nextLine();
                 String[] parts = line.split(",");
                 // format 0.string 1.string 2.double 3.string/bool
@@ -35,81 +41,77 @@ public class Application{
                     boolean b = Boolean.parseBoolean(x);
                     array.add(new Employee(n, s, b));
                 }
-                count++;
+                count++;      
             }
-            catch (Exception e){
-                System.out.println("Error: " + e.getMessage());
-                System.exit(-1);
-            }
+            input.close();
         }
-        input.close();
+        catch (IOException e){
+            System.out.println("File Not Found Error...Exiting...");
+            System.exit(-1);
+        }
+        catch (Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
         System.out.println("Number of Reads from file: " + count);
-        return count;
     }
 ////////////////////////////////////////////// end of function
 
 ///////////////////////////////////////////// Serialization method
-    public static void Serialization(int count){
+    public static void Serialization(){
         ObjectOutputStream out;
         try{
             FileOutputStream file = new FileOutputStream("data.ser");
             out = new ObjectOutputStream(file);
+            for (int i = 0; i < array.size(); i++){
+                out.writeObject(array.get(i));
+            }
+            out.close();            
         }
         catch(IOException e){
             System.out.println("Error: " + e.getMessage());
             System.exit(-1);
         }
-        for (int i = 0; i < count; i++){
-            out.writeObject(array.get(i));
+        catch (Exception e){
+            System.out.println("Error: " + e.getMessage());
         }
-        out.close();
-
     }
 /////////////////////////////////////////
 
 ////////////////////////////////////////  Deserialize method
-    public static ArrayList<String> Deserialization(){
-        ArrayList<String> arrayTwo = new ArrayList<>();
+    public static void Deserialization(){
         ObjectInputStream in;
+        int x = 0;
         try{
             FileInputStream file = new FileInputStream("data.ser");
             in = new ObjectInputStream(file);
+            while (true){
+                try{
+                    newArray.add((Staff) in.readObject());
+                    x++;
+                }
+                catch (EOFException e){
+                    System.out.println("");
+                    break;
+                }
+            }
+            in.close();            
         }
         catch (IOException e){
             System.out.println("Error: " + e.getMessage());
             System.exit(-1);
         }
-        int x = 0;
-        while (true){
-            try{
-                arrayTwo.add((Staff) in.readObject());
-                x++;
-            }
-            catch (EOFException e){
-                System.out.println("");
-                break;
-            }
+        catch (Exception e){
+            System.out.println("Error: " + e.getMessage());
         }
-        in.close();
+
         System.out.println("Objects Deserialized: " + x);
-        return arrayTwo;
     }
 ///////////////////////////////////////
-    public static void DisplayArray(ArrayList<String> a){
+    public static void DisplayArray(){
         System.out.println("======= ========== ========");
-        for (int i = 0; i < a.length(); i++){
-            System.out.println(a.get(i));
+        for (int i = 0; i < newArray.size(); i++){
+            System.out.println(newArray.get(i));
         }
         System.out.println("======= ========== ========");
-    }
-//////////////////////////////////////
-    public static void main(String[] args){
-        int count = ReadingFromTextFile();
-        Serialization(count);
-        ArrayList<String> arrayTwo = Deserialization();
-        DisplayArray(arrayTwo);  // print
-        Collections.sort(arrayTwo);  // sort
-        System.out.println("Sorted Array");
-        DisplayArray(arrayTwo);
     }
 }
